@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using dotnet6_ConsoleApp.Data;
+using dotnet6_ConsoleApp.Models;
 using dotnet6_ConsoleApp.Services;
 using KissLog;
 using KissLog.AspNetCore;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Logging;
 
 class Program
 {
+    private readonly ILogger logger;
     static void Main()
     {
         Logger.SetFactory(new KissLog.LoggerFactory(new Logger(url: "ConsoleApp/Main")));
@@ -28,15 +31,9 @@ class Program
 
         ILogger logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-        logger.LogTrace("Trace message");
-        logger.LogDebug("Debug message");
-        logger.LogInformation("Info message");
-        logger.LogWarning("Warning message");
-        logger.LogCritical("Critical message");
-
         IFooService fooService = serviceProvider.GetRequiredService<IFooService>();
         fooService.Foo();
-
+        AddProduct(logger);
         var loggers = Logger.Factory.GetAll();
         Logger.NotifyListeners(loggers);
     }
@@ -67,6 +64,24 @@ class Program
 
         return services.BuildServiceProvider();
     }
+    public static void AddProduct(ILogger logger)
+    {
+        // Your logic to add the product to the database
+        AppDbContext context = new AppDbContext();
+        User user = new User();
+        user.Name = "Sarkhan";
+        context.Add(user);
+        Product product1 = new Product();
+        product1.Name = "Milk";
+        product1.CreatedBy = user;
+        product1.CreatedAt = DateTime.Now;
+        context.SaveChanges();
+        
+        // Log the creation message using KissLog
+        string logMessage = $"Product {product1.Name} created by {product1.CreatedBy.Name}";
+        logger.LogInformation(logMessage);
+    }
+
 
     static void ConfigureKissLog(IConfiguration configuration)
     {

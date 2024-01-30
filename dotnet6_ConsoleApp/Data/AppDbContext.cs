@@ -12,7 +12,7 @@ namespace dotnet6_ConsoleApp.Data
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=DESKTOP-OJPOT2\SQLEXPRESS;Database=KissLog;Trusted_Connection=True;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer("Server=DESKTOP-JG3I1AO\\SQLEXPRESS;Database=KissLog;Trusted_Connection=True;TrustServerCertificate=True;");
             base.OnConfiguring(optionsBuilder);
         }
     
